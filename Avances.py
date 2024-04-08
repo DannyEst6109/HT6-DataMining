@@ -23,9 +23,9 @@ print(train.head())
 print(test.head())
 
 # Crear variables dicotómicas
-train['grupo'] = pd.cut(train['SalePrice'], bins=[0, 178000, 301000, np.inf], labels=[1, 2, 3])
-train['grupo2'] = pd.cut(train['SalePrice'], bins=[0, 178000, 301000, np.inf], labels=[1, 2, np.nan])
-train['grupo3'] = pd.cut(train['SalePrice'], bins=[0, 178000, 301000, np.inf], labels=[1, np.nan, np.nan])
+train['grupo'] = pd.cut(train['SalePrice'], bins=[0, 178000, 301000, np.inf], labels=[1, 2, 3], ordered=False)
+train['grupo2'] = pd.cut(train['SalePrice'], bins=[0, 178000, 301000, np.inf], labels=[1, 2, 0], ordered=False)
+train['grupo3'] = pd.cut(train['SalePrice'], bins=[0, 178000, 301000, np.inf], labels=[1, 0, 0], ordered=False)
 
 # Convertir a variables categóricas
 train['grupo'] = train['grupo'].astype('category')
@@ -39,7 +39,7 @@ train = pd.concat([train, pd.get_dummies(train['grupo'], prefix='datos'),
 
 # Seleccionar variables para el modelo
 variables_modelo = ['LotFrontage', 'LotArea', 'GrLivArea', 'YearBuilt', 'BsmtUnfSF',
-                    'TotalBsmtSF', 'X1stFlrSF', 'GarageYrBlt', 'GarageArea', 
+                    'TotalBsmtSF', '1stFlrSF', 'GarageYrBlt', 'GarageArea', 
                     'YearRemodAdd', 'SalePrice', 'datos_1', 'datos_2', 'datos_3']
 
 train = train[variables_modelo].dropna()
