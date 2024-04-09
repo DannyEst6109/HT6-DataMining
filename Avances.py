@@ -40,7 +40,7 @@ train = pd.concat([train, pd.get_dummies(train['grupo'], prefix='datos'),
 # Seleccionar variables para el modelo
 variables_modelo = ['LotFrontage', 'LotArea', 'GrLivArea', 'YearBuilt', 'BsmtUnfSF',
                     'TotalBsmtSF', '1stFlrSF', 'GarageYrBlt', 'GarageArea', 
-                    'YearRemodAdd', 'SalePrice', 'datos_1', 'datos_2', 'datos_3']
+                    'YearRemodAdd', 'SalePrice', 'datos_1', 'datos_2', 'datos_3', '1stFlrSF']
 
 train = train[variables_modelo].dropna()
 
@@ -48,10 +48,21 @@ train = train[variables_modelo].dropna()
 train, test = train_test_split(train, test_size=(1-porcentaje), random_state=123)
 
 # Entrenar modelos
+
 for i in range(1, 4):
     tic = time.time()
     print(f"Entrenamiento modelo casas {'caras' if i == 1 else 'intermedias' if i == 2 else 'baratas'}")
     X_train = train.drop(columns=['SalePrice', f'datos_{i}'])
+
+    # Verificar el tipo de datos de todas las columnas en X_train
+    print(X_train.dtypes)
+
+    # Convertir todas las columnas a tipo numérico si es necesario
+    X_train = X_train.apply(pd.to_numeric, errors='coerce')
+
+    # Eliminar filas con valores faltantes
+    X_train = X_train.dropna()
+
     y_train = train[f'datos_{i}']
     modelo = sm.Logit(y_train, sm.add_constant(X_train)).fit(maxiter=100)
     print(modelo.summary())
